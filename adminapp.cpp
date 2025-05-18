@@ -2,24 +2,26 @@
 #include <fstream>
 #include <vector>
 #include <unordered_map>
+#include "Post.h"
+
 using namespace std;
 
 ifstream f;
 
-struct Stats {
-    unsigned int like = 0;
-    unsigned int dislike = 0;
-    unsigned int love = 0;
-};
-
-struct Post {
-    int id;
-    string s;
-    string file;
-    string content;
-    vector<string> comments;
-    Stats stat;
-};
+// struct Stats {
+//     unsigned int like = 0;
+//     unsigned int dislike = 0;
+//     unsigned int love = 0;
+// };
+//
+// struct Post {
+//     int id;
+//     string s;
+//     string file;
+//     string content;
+//     vector<string> comments;
+//     Stats stat;
+// };
 
 //placeholder read and write code to verify eveyrthing works
 
@@ -36,7 +38,7 @@ void read() {
         Post post;
         f >> post.id;
         f.ignore();
-        getline(f, post.s);
+        getline(f, post.title);
         getline(f, post.file);
         getline(f, post.content);
         idToIndex[post.id] = posts.size();
