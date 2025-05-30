@@ -31,7 +31,7 @@ unordered_map<int, int> idToIndex;
 
 void read() {
 
-    f.open("dummyInputs/Postari.txt");
+    f.open("tests/Postari.txt");
     int n;
     f >> n;
     for (int i = 0; i < n; i++) {
@@ -46,7 +46,7 @@ void read() {
     }
     f.close();
 
-    f.open("dummyInputs/Comentarii.txt");
+    f.open("tests/Comentarii.txt");
     int x;
     string s;
     while (f >> x) {
@@ -59,7 +59,7 @@ void read() {
 
     f.close();
 
-    f.open("dummyInputs/Statistici.txt");
+    f.open("tests/Statistici.txt");
     while (f >> x) {
         if (idToIndex.count(x)) {
             auto& stat = posts[idToIndex[x]].stat;

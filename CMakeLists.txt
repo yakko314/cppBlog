@@ -4,20 +4,20 @@ project(cppBlog)
 set(CMAKE_CXX_STANDARD 20)
 
 add_library(bloglib STATIC
-        class/Post.cpp
-        class/Post.h
-        class/Stats.cpp
-        class/Stats.h
+        src/Post.cpp
+        src/Post.h
+        src/Stats.cpp
+        src/Stats.h
 )
 
 target_include_directories(bloglib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/class)
 
 add_library(blogutils STATIC
-        libs/blogutils.cpp
+        src/util/blogutils.cpp
 )
 
-add_executable(adminapp adminapp.cpp)
+add_executable(adminapp src/adminapp.cpp)
 target_link_libraries(adminapp PRIVATE bloglib blogutils)
 
-add_executable(userapp userapp.cpp)
+add_executable(userapp src/userapp.cpp)
 target_link_libraries(userapp PRIVATE bloglib blogutils)
