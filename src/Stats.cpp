@@ -2,7 +2,7 @@
 // Created by lam on 18.05.2025.
 //
 
-#include "../class/Stats.h"
+#include "Stats.h"
 
 Stats::Stats() : like(0), dislike(0), love(0) {
 }
