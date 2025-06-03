@@ -30,7 +30,10 @@ public:
     void bigPrint(std::ostream& os) const;
 
     void addComment(const Comment& comment);
-    vector<Comment> getComments(){ return comments;};
+
+    vector<Comment> getComments() const { return comments;};
+    int getId()const{ return id;}
+    Stats getStats() const { return stats;}
 };
 
 

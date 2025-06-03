@@ -17,7 +17,9 @@ class Comment {
 public:
     Comment(const string& username, const string& content, const Date& date);
     friend std::ostream &operator<<(std::ostream &os, const Comment &comment);
-
+    string getUsername()const{return username;}
+    string getContent()const{return content;}
+    Date getDate()const{return date;}
 };
 
 

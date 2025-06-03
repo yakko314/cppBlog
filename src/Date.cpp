@@ -6,17 +6,13 @@
 
 Date::Date(const unsigned int &day, const unsigned int &month, const unsigned int &year) {
     if (month < 1 || month > 12) {
-        throw "Invalid month";
+        throw std::invalid_argument("Invalid month: " + std::to_string(month));
     }
     if (day < 1 || day > 31) {
-        throw "Invalid day";
+        throw std::invalid_argument("Invalid day: " + std::to_string(day));
     }
-    if (month == 2) {
-        if (day == 29) {
-            if (year % 4 != 0) {
-                throw "Invalid day, not leap year";
-            }
-        }
+    if (month == 2 && day == 29 && year % 4 != 0) {
+        throw std::invalid_argument("Invalid date: " + std::to_string(year) + " is not a leap year");
     }
     this->day = day;
     this->month = month;
@@ -25,6 +21,6 @@ Date::Date(const unsigned int &day, const unsigned int &month, const unsigned in
 }
 
 std::ostream & operator<<(std::ostream &os, const Date &date) {
-    os << date.day << "/" << date.month << "/" << date.year;
+    os << date.day << "." << date.month << "." << date.year;
     return os;
 }

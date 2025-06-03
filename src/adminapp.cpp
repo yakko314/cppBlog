@@ -10,22 +10,6 @@ using namespace std;
 
 ifstream f;
 
-// struct Stats {
-//     unsigned int like = 0;
-//     unsigned int dislike = 0;
-//     unsigned int love = 0;
-// };
-//
-// struct Post {
-//     int id;
-//     string s;
-//     string file;
-//     string content;
-//     vector<string> comments;
-//     Stats stat;
-// };
-
-//placeholder read and write code to verify eveyrthing works
 
 vector<Post> posts;
 unordered_map<int, int> idToIndex;
@@ -67,8 +51,8 @@ void read() {
         f>>x;
         f.ignore();
         string username;
-        getline(f, content);
         getline(f, username);
+        getline(f, content);
         int day, month, year;
         f >> day >> month >> year;
         if (idToIndex.count(x)) {
@@ -101,7 +85,12 @@ void read() {
 
 }
 
-void Show() {
+void showAll() {
+    for (auto const &p : posts) {
+        cout << p << '\n';
+    }
+}
+void showAllExpanded() {
     for (auto& p : posts) {
         // cout << p << '\n';
         // // for (const auto& c : p.getComments()) {
@@ -114,6 +103,7 @@ void Show() {
 
 int main() {
     read();
-    Show();
+    showAll();
+    showAllExpanded();
     return 0;
 }

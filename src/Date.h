@@ -15,6 +15,10 @@ class Date {
 public:
     Date(const unsigned int& day, const unsigned int& month, const unsigned int& year);
     friend std::ostream& operator<<(std::ostream& os, const Date& date);
+
+    unsigned int getDay() const{return day;}
+    unsigned int getMonth() const{return month;}
+    unsigned int getYear() const{return year;}
 };
 
 
