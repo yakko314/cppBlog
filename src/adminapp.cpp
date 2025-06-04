@@ -191,8 +191,11 @@ void showAllExpanded() {
  * @brief Afiseaza toate comenzile posibile
  */
 void cmdHelp() {
-    cout << CYAN "~Sistem de blog: Admin~\n" RESET
-    << GREEN "etc" RESET " - etcetcetc";
+    cout << CYAN "~Sistem de blog: Utilizator~\n" RESET
+    << GREEN "vizualizare_postari" RESET " - arata toate postarile intr-o lista numerotata;\n"
+    << GREEN "vizualizare_postare <nr_postare>" RESET " - arata o postare in detaliu (continut + comentarii);\n"
+    << GREEN "adauga_comentariu <nr_postare> <username> <continut_comentariu> " RESET "- adauga un comentariu unei postari, va rugam sa folosititi citate pentru username si continut;\n"
+    << GREEN "adauga_interactiune <nr_postare> <like|dislike|love> " RESET "- adauga o anume interactiune unei postari.";
 }
 
 /**
