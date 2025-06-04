@@ -192,7 +192,7 @@ void showAllExpanded() {
  */
 void cmdHelp() {
     cout << CYAN "~Sistem de blog: Admin~\n" RESET
-    << GREEN "etc" RESET "- etcetcetc";
+    << GREEN "etc" RESET " - etcetcetc";
 }
 
 /**
