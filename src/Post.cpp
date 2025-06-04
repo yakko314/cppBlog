@@ -47,7 +47,7 @@ void Post::addComment(const Comment &comment) {
 
 void Post::bigPrint(std::ostream& os) const {
     os <<
-        //id << " | " //putem scapa de aceasta
+        //id << " | " //folosit pentru testare, programul foloseste index-ul vectorului in loc de id
     BOLDMAGENTA<< title << RESET << " | "
     BOLDRED<< file << RESET << " | "
     BLUE<< date << RESET << " | "
@@ -66,7 +66,7 @@ void Post::bigPrint(std::ostream& os) const {
 
 ostream & operator<<(ostream &os, const Post &post) {
     os <<
-    //post.id << " | " << // poate fi eventual comentat out si inlocuit cu un count;
+    //post.id << " | " << //folosit pentru testare, programul foloseste index-ul vectorului in loc de id
     BOLDMAGENTA << post.title << RESET << " | "
     << "Fișier: " BOLDRED << post.file << RESET << " | "
     BLUE << post.date << RESET " | "
