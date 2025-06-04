@@ -35,11 +35,14 @@ using namespace std;
 ifstream f;
 ofstream g;
 
-vector<Post> posts;
-unordered_map<int, int> idToIndex;
+vector<Post> posts; ///< Toate postarile de pe blog.
+unordered_map<int, int> idToIndex; ///< Un map pe care il folosim pentru a face conversia din ID in index din lista
 
-int nrPosts = 0;
-int nrComments = 0;
+int nrPosts = 0; ///< variabila ajutatoare pentru nr de postari
+int nrComments = 0; ///< variabila ajutatoare pentru nr de comentarii
+/**
+ * @brief Citeste toate datele relevante si le include in clase cu care putem lucra
+ */
 void read() {
 
     f.open("tests/Postari.txt");
@@ -111,12 +114,68 @@ void read() {
 
 }
 
+/**
+ * @brief Scrie interactiuni catre fisierul ce le contine
+ */
+void writeToStats() {
+    int nrInteractiuni = 0;
+    for (const auto& p : posts) {
+        if (p.getStats().getLike() != 0 ||
+            p.getStats().getDislike() != 0 ||
+            p.getStats().getLove() != 0) {
+            nrInteractiuni++;
+            }
+    }
+    g.open("tests/Statistici.txt");
+    g << nrInteractiuni << "\n\n";
+    for (const auto& p : posts) {
+        if (p.getStats().getLike() != 0 || p.getStats().getDislike() != 0 || p.getStats().getLove() != 0) {
+            g << p.getId() << '\n';
+            g << p.getStats().getLike() << ' '
+            << p.getStats().getDislike() << ' '
+            << p.getStats().getLove() << '\n';
+            g << '\n';
+        }
+
+    }
+    g.close();
+}
+
+/**
+ * @brief Scrie comentarii catre fisierul care le contine
+ */
+void writeToComments() {
+    g.open("tests/Comentarii.txt");
+    g << nrComments << "\n\n";
+    for (const auto& p : posts) {
+        if (!p.getComments().empty()) {
+            for (const auto& c : p.getComments()) {
+                g << p.getId() << '\n';
+                g << c.getUsername() << '\n';
+                g << c.getContent() << '\n';
+                g << c.getDate().getDay() << ' ';
+                g << c.getDate().getMonth() << ' ';
+                g << c.getDate().getYear() << '\n';
+                g << "\n";
+            }
+
+        }
+    }
+    g.close();
+}
+/**
+ * @brief Afiseaza toate postarile in mod compact.
+ */
 void showAll() {
     int i = 1;
     for (auto const &p : posts) {
         cout << i++ << " | " << p << '\n';
     }
 }
+
+/**
+ * @brief Afiseaza toate postarile cu continut si comentarii, a fost folosita doar in testare.
+ */
 void showAllExpanded() {
     for (auto& p : posts) {
         // cout << p << '\n';
@@ -128,6 +187,9 @@ void showAllExpanded() {
     }
 }
 
+/**
+ * @brief Afiseaza toate comenzile posibile
+ */
 void cmdHelp() {
     cout << CYAN "~Sistem de blog: Utilizator~\n" RESET
     << GREEN "vizualizare_postari" RESET " - arata toate postarile intr-o lista numerotata;\n"
@@ -135,6 +197,10 @@ void cmdHelp() {
     << GREEN "adauga_comentariu <nr_postare> <username> <continut_comentariu> " RESET "- adauga un comentariu unei postari, va rugam sa folosititi citate pentru username si continut;\n"
     << GREEN "adauga_interactiune <nr_postare> <like|dislike|love> " RESET "- adauga o anume interactiune unei postari.";
 }
+
+/**
+ * @brief Semnaleaza lipsa unei postari la un anume index.
+ */
 void noPost() {
     cout << RED "Postarea nu exista!\n" RESET;
 }
@@ -165,7 +231,7 @@ int main(int argc, char* argv[]){
             return 0;
         }
 
-        //current day,month,year
+        //Extragem data curenta
         auto now = chrono::system_clock::now();
         time_t now_time = chrono::system_clock::to_time_t(now);
         tm* local_tm = localtime(&now_time);
@@ -182,34 +248,20 @@ int main(int argc, char* argv[]){
             string content = argv[4];
             Comment comment(username,content,date);
             posts[index].addComment(comment);
-            cout << YELLOW "Comentariu " RESET "s-a adaugat cu success!";
+            cout << YELLOW "Comentariu " RESET "s-a adaugat cu success!\n";
+
             nrComments++;
             //posts[index].bigPrint(cout);
 
-            g.open("tests/Comentarii.txt");
-            g << nrComments << "\n\n";
-            for (const auto& p : posts) {
-                if (!p.getComments().empty()) {
-                    for (const auto& c : p.getComments()) {
-                        g << p.getId() << '\n';
-                        g << c.getUsername() << '\n';
-                        g << c.getContent() << '\n';
-                        g << c.getDate().getDay() << ' ';
-                        g << c.getDate().getMonth() << ' ';
-                        g << c.getDate().getYear() << '\n';
-                        g << "\n";
-                    }
-
-                }
-            }
-            g.close();
+            writeToComments();
         }
         else noPost();
         return 0;
     }
     if (command == "adauga_interactiune") {
         if (argc < 4) {
-            cerr << GREEN "Utilizare:" RESET " adauga_interactiune <nr_postare> <like|dislike|love>";
+            cerr << GREEN "Utilizare:" RESET " adauga_interactiune <nr_postare> <like|dislike|love>\n";
+            return 0;
         }
         int index = stoi(argv[2]) - 1;
         if (index >= 0 && index < posts.size()) {
@@ -217,29 +269,10 @@ int main(int argc, char* argv[]){
             if (interaction == "like") posts[index].Like(), cout << GREEN "Like";
             else if (interaction == "dislike") posts[index].Dislike(), cout << CYAN "Dislike";
             else if (interaction == "love") posts[index].Love(), cout << RED "Love";
-            cout << YELLOW "Comentariu" RESET " s-a adaugat cu success!\n";
-            int nrInteractiuni = 0;
-            for (const auto& p : posts) {
-                if (p.getStats().getLike() != 0 || p.getStats().getDislike() != 0 || p.getStats().getLove() != 0) {
-                    nrInteractiuni++;
-                }
-            }
-            g.open("tests/Statistici.txt");
-            g << nrInteractiuni << "\n\n";
-            for (const auto& p : posts) {
-                if (p.getStats().getLike() != 0 || p.getStats().getDislike() != 0 || p.getStats().getLove() != 0) {
-                    g << p.getId() << '\n';
-                    g << p.getStats().getLike() << ' '
-                    << p.getStats().getDislike() << ' '
-                    << p.getStats().getLove() << '\n';
-                    g << '\n';
-                }
-
-            }
-            g.close();
+            cout << RESET " s-a adaugat cu success!\n";
+            writeToStats();
         }
-        else {
-            noPost();
-        }
+        else noPost();
+        return 0;
     }
 }
