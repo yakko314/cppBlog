@@ -203,6 +203,50 @@ void writeposts()
 }
 
 /**
+ * O functie template care calculeaza valuarea procentuala fata de un total
+ * @param value valuarea pentru care se doreste calculat procentul
+ * @param total totalul fata de care se calculeaza procentul
+ */
+template<typename T> double precent(T value,T total)
+{
+    if(total==0) return 0.0;
+    return (static_cast<double>(value)/total)*100.0;
+}
+
+/**
+ * O functie care afiseaza statistica unei postari
+ * @param index este indexul postarii pentru statistica
+ */
+void postprecent(int index)
+{
+    unsigned int total=posts[index].getStats().getDislike()+posts[index].getStats().getLike()+posts[index].getStats().getLove();
+    cout<<BLUE<<"Statisticile posarii: \n"<<RESET<<GREEN<<"+"<<precent(posts[index].getStats().getLike(),total)<<"%"<<RESET<<"|"
+    <<CYAN<<"-"<<precent(posts[index].getStats().getDislike(),total)<<"%"<<RESET<<"|"
+    <<RED<<precent(posts[index].getStats().getLove(),total)<<"%"<<" <3"<<RESET<<"\n";
+}
+
+/**
+ * @brief O functie care afiseaza distributia procentuala a blogului
+ */
+void precentdistribution()
+{
+    double sumLike=0.0;
+    double sumDislike=0.0;
+    double sumLove=0.0;
+    for(int i=0;i<posts.size();i++)
+    {
+        unsigned int total=posts[i].getStats().getDislike()+posts[i].getStats().getLike()+posts[i].getStats().getLove();
+        if(total==0) continue;
+        sumLike+=precent(posts[i].getStats().getLike(),total);
+        sumDislike+=precent(posts[i].getStats().getDislike(),total);
+        sumLove+=precent(posts[i].getStats().getLove(),total);
+    }
+    double totalPrecent=sumDislike+sumLike+sumLove;
+    cout<<"Distributia procentuala a statisticilor: "<<GREEN<<"+"<<precent(sumLike,totalPrecent)<<"%"<<RESET<<" |"<<CYAN<<"-"<<precent(sumDislike,totalPrecent)
+    <<"% "<<RESET<<"|"<<RED<<precent(sumLove,totalPrecent)<<"% <3\n"<<RESET;
+}
+
+/**
  * @brief Cauta cel mai mic id care nu este folosit
  */
 int idnou()
@@ -247,7 +291,9 @@ void cmdHelp()
     << GREEN "vizualizare_interactiuni <numar_postare>" RESET" - arata toate interactiunile unei postari;\n"
     << GREEN "postare_noua <titlu_postare> <continut_postare> [file]" RESET " - adauga o postare noua;\n"
     << GREEN "editare_postare <numar_postare> <titlu|continut|fisier> <content_nou>" RESET " - editeaza contentul unei postari;\n"
-    << GREEN "sterge_postare <numar_postare>" RESET " - sterge o postare.";
+    << GREEN "sterge_postare <numar_postare>" RESET " - sterge o postare."
+    << GREEN "statistici_postare <numar_postare>" RESET " - procentul de like, dislike si love ale unei posari"
+    << GREEN "statistici_postari" RESET " - distributia procentuala ale staticilor per postare";
 }
 
 /**
@@ -418,6 +464,27 @@ int main(int argc, char* argv[])
         posts.erase(posts.begin()+index);
         cout<<"Postarea a fost stearsa cu success!\n";
         writeposts();
+        return 0;
+    }
+    if(command=="statistici_postare")
+    {
+        if(argc<3)
+        {
+            cout<< GREEN "Utilizare: " RESET "statistici_postare <numar_postare>\n";
+            return 0;
+        }
+        int index=stoi(argv[2])-1;
+        if(index<0 || index>=posts.size())
+        {
+            noPost();
+            return 0;
+        }
+        postprecent(index);
+        return 0;
+    }
+    if(command=="statistici_postari")
+    {
+        precentdistribution();
         return 0;
     }
     else
