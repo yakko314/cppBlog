@@ -122,6 +122,65 @@ void read()
 }
 
 /**
+ * @brief Sterge interactiunile de la o postare
+ */
+void deleteStats(int index) 
+{
+    int nrInteractiuni = 0;
+    for (const auto& p : posts) 
+    {
+        if (p.getStats().getLike() != 0 || p.getStats().getDislike() != 0 || p.getStats().getLove() != 0) 
+        {
+            if(p.getId()!=posts[index].getId())
+                nrInteractiuni++;
+        }
+    }
+    g.open("tests/Statistici.txt");
+    g << nrInteractiuni << "\n\n";
+    for (const auto& p : posts) 
+    {
+        if (p.getId()!=posts[index].getId() && (p.getStats().getLike() != 0 || p.getStats().getDislike() != 0 || p.getStats().getLove() != 0))
+        {
+            g << p.getId() << '\n';
+            g << p.getStats().getLike() << ' '
+            << p.getStats().getDislike() << ' '
+            << p.getStats().getLove() << '\n';
+            g << '\n';
+        }
+
+    }
+    g.close();
+}
+
+/**
+ * @brief Sterge comentariile de la o postare
+ */
+void deleteComments(int index) 
+{
+    g.open("tests/Comentarii.txt");
+    nrComments-=posts[index].getComments().size();
+    int id=posts[index].getId();
+    g << nrComments << "\n\n";
+    for (const auto& p : posts) 
+    {
+        if (!p.getComments().empty() && p.getId()!=id) 
+        {
+            for (const auto& c : p.getComments()) 
+            {
+                g << p.getId() << '\n';
+                g << c.getUsername() << '\n';
+                g << c.getContent() << '\n';
+                g << c.getDate().getDay() << ' ';
+                g << c.getDate().getMonth() << ' ';
+                g << c.getDate().getYear() << '\n';
+                g << "\n";
+            }
+
+        }
+    }
+    g.close();
+}
+/**
  * @brief Rescrie in fisierul de postari toate postarile
  */
 void writeposts()
@@ -199,8 +258,19 @@ void noPost()
     cout << RED "Postarea nu exista!\n" RESET;
 }
 
+bool validatefile(string file)
+{
+    if(!extensie(file,".mp4") && !extensie(file,".mp3") && !extensie(file,".jpg") && !extensie(file,".png"))
+    {
+        cout<<RED<<"Fisierul nu contine o extensie valida\n"<<RESET;
+        cout<<BLUE<<"Extensiile Valde: "<<RESET<<" .mp4; .mp3; .jpg; .png;\n";
+        return false;
+    }
+    return true;
+}
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[])
+{
     read();
     if (argc == 1) 
     {
@@ -268,12 +338,8 @@ int main(int argc, char* argv[]){
         if(argc>4)
         {
             file=argv[4];
-            if(!extensie(file,".mp4") && !extensie(file,".mp3") && !extensie(file,".jpg") && !extensie(file,".png"))
-            {
-                cout<<RED<<"Fisierul nu contine o extensie valida\n"<<RESET;
-                cout<<BLUE<<"Extensiile Valde: "<<RESET<<" .mp4; .mp3; .jpg; .png;\n";
+            if(!validatefile(file))
                 return 0;
-            }
         }
         else
             file="NONE";
@@ -316,12 +382,8 @@ int main(int argc, char* argv[]){
         if(edit=="fisier")
         {
             string file=argv[4];
-            if(!extensie(file,".mp4") && !extensie(file,".mp3") && !extensie(file,".jpg") && !extensie(file,".png"))
-            {
-                cout<<RED<<"Fisierul nu contine o extensie valida\n"<<RESET;
-                cout<<BLUE<<"Extensiile Valde: "<<RESET<<" .mp4; .mp3; .jpg; .png;\n";
+            if(!validatefile(file))
                 return 0;
-            }
             posts[index].editfile(file);
             cout<<"Fisierul postarii a fost editata cu success!\n";
             writeposts();
@@ -346,9 +408,17 @@ int main(int argc, char* argv[]){
             noPost();
             return 0;
         }
+        int id=posts[index].getId();
+        deleteComments(index);
+        deleteStats(index);
         posts.erase(posts.begin()+index);
         cout<<"Postarea a fost stearsa cu success!\n";
         writeposts();
+        return 0;
+    }
+    else
+    {
+        cout<<RED<<"Comanda nu exista\n"<<RESET;
         return 0;
     }
 }
