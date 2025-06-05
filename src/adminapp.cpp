@@ -258,6 +258,10 @@ void noPost()
     cout << RED "Postarea nu exista!\n" RESET;
 }
 
+/**
+ * O functie care valideaza extensia de la un file
+ * @param file este stringul pentru care verifica extensia
+ */
 bool validatefile(string file)
 {
     if(!extensie(file,".mp4") && !extensie(file,".mp3") && !extensie(file,".jpg") && !extensie(file,".png"))
