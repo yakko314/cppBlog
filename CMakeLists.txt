@@ -1,17 +1,17 @@
 add_library(bloglib STATIC
-        src/Post.cpp
-        src/Post.h
-        src/Comment.cpp
-        src/Comment.h
-        src/Date.cpp
-        src/Date.h
-        src/Stats.cpp
-        src/Stats.h
+        shared/classes/Post.cpp
+        shared/classes/Post.h
+        shared/classes/Comment.cpp
+        shared/classes/Comment.h
+        shared/classes/Date.cpp
+        shared/classes/Date.h
+        shared/classes/Stats.cpp
+        shared/classes/Stats.h
 )
 
-add_executable(adminapp src/adminapp.cpp
+add_executable(adminapp adminapp.cpp
 )
 target_link_libraries(adminapp bloglib)
 
-add_executable(userapp src/userapp.cpp)
+add_executable(userapp userapp.cpp)
 target_link_libraries(userapp bloglib)

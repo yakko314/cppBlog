@@ -8,8 +8,8 @@
 #include <ctime>
 
 
-#include "Comment.h"
-#include "Post.h"
+#include "shared/classes/Comment.h"
+#include "shared/classes/Post.h"
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
@@ -45,8 +45,11 @@ int nrComments = 0; ///< variabila ajutatoare pentru nr de comentarii
  */
 void read() 
 {
-
-    f.open("tests/Postari.txt");
+    f.open("shared/files/Postari.txt");
+    if(!f) {
+        cerr << RED "Nu exista fisierul cu " MAGENTA "postari" RED "! Datele afisate pot fi gresite!\n" RESET;
+        return;
+    }
     f >> nrPosts;
     for (int i = 0; i < nrPosts; i++) 
     {
@@ -73,7 +76,11 @@ void read()
     }
     f.close();
 
-    f.open("tests/Comentarii.txt");
+    f.open("shared/files/Comentarii.txt");
+    if(!f) {
+        cerr << RED "Nu exista fisierul cu " YELLOW "comentarii" RED "! Datele afisate pot fi gresite!\n" RESET;
+        return;
+    }
     string content;
     f >> nrComments;
     for (int i = 0; i < nrComments; i++) 
@@ -97,7 +104,11 @@ void read()
 
     f.close();
 
-    f.open("tests/Statistici.txt");
+    f.open("shared/files/Statistici.txt");
+    if(!f) {
+        cerr << RED "Nu exista fisierul cu " GREEN "interactiuni" RED "! Datele afisate pot fi gresite!\n" RESET;
+        return;
+    }
     int nrInteractiuni;
     f >> nrInteractiuni;
     for (int i = 0; i < nrInteractiuni; i++) 
@@ -118,7 +129,6 @@ void read()
         }
     }
     f.close();
-
 }
 
 /**
@@ -135,7 +145,7 @@ void deleteStats(int index)
                 nrInteractiuni++;
         }
     }
-    g.open("tests/Statistici.txt");
+    g.open("shared/files/Statistici.txt");
     g << nrInteractiuni << "\n\n";
     for (const auto& p : posts) 
     {
@@ -157,7 +167,7 @@ void deleteStats(int index)
  */
 void deleteComments(int index) 
 {
-    g.open("tests/Comentarii.txt");
+    g.open("shared/files/Comentarii.txt");
     nrComments-=posts[index].getComments().size();
     int id=posts[index].getId();
     g << nrComments << "\n\n";
@@ -185,7 +195,7 @@ void deleteComments(int index)
  */
 void writeposts()
 {
-    g.open("tests/Postari.txt");
+    g.open("shared/files/Postari.txt");
     g<< posts.size()<<"\n";
     for(int i=0;i<posts.size();i++)
     {

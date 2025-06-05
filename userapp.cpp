@@ -8,8 +8,8 @@
 #include <ctime>
 
 
-#include "Comment.h"
-#include "Post.h"
+#include "shared/classes/Comment.h"
+#include "shared/classes/Post.h"
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
@@ -45,7 +45,11 @@ int nrComments = 0; ///< variabila ajutatoare pentru nr de comentarii
  */
 void read() {
 
-    f.open("tests/Postari.txt");
+    f.open("shared/files/Postari.txt");
+    if (!f) {
+        cerr << RED "Nu exista fisierul cu " MAGENTA "postari" RED "! Datele afisate pot fi gresite!\n" RESET;
+        return;
+    }
     f >> nrPosts;
     for (int i = 0; i < nrPosts; i++) {
         int id;
@@ -71,8 +75,11 @@ void read() {
     }
     f.close();
 
-    f.open("tests/Comentarii.txt");
-    string content;
+    f.open("shared/files/Comentarii.txt");
+    if(!f) {
+        cerr << RED "Nu exista fisierul cu " YELLOW "comentarii" RED "! Datele afisate pot fi gresite!\n" RESET;
+        return;
+    }    string content;
     f >> nrComments;
     for (int i = 0; i < nrComments; i++) {
         int x;
@@ -93,8 +100,11 @@ void read() {
 
     f.close();
 
-    f.open("tests/Statistici.txt");
-    int nrInteractiuni;
+    f.open("shared/files/Statistici.txt");
+    if(!f) {
+        cerr << RED "Nu exista fisierul cu " GREEN "interactiuni" RED "! Datele afisate pot fi gresite!\n" RESET;
+        return;
+    }    int nrInteractiuni;
     f >> nrInteractiuni;
     for (int i = 0; i < nrInteractiuni; i++) {
         int x;
@@ -126,7 +136,7 @@ void writeToStats() {
             nrInteractiuni++;
             }
     }
-    g.open("tests/Statistici.txt");
+    g.open("shared/files/Statistici.txt");
     g << nrInteractiuni << "\n\n";
     for (const auto& p : posts) {
         if (p.getStats().getLike() != 0 || p.getStats().getDislike() != 0 || p.getStats().getLove() != 0) {
@@ -145,7 +155,7 @@ void writeToStats() {
  * @brief Scrie comentarii catre fisierul care le contine
  */
 void writeToComments() {
-    g.open("tests/Comentarii.txt");
+    g.open("shared/files/Comentarii.txt");
     g << nrComments << "\n\n";
     for (const auto& p : posts) {
         if (!p.getComments().empty()) {
