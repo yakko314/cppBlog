@@ -212,6 +212,10 @@ int main(int argc, char* argv[]){
         return 0;
     }
     string command = argv[1];
+    if (command == "help") {
+        cmdHelp();
+        return 0;
+    }
     if (command == "vizualizare_postari") {
         showAll();
         return 0;
@@ -224,6 +228,7 @@ int main(int argc, char* argv[]){
         else {
             noPost();
         }
+        return 0;
     }
     if (command == "adauga_comentariu") {
         if (argc < 5) {
@@ -275,4 +280,5 @@ int main(int argc, char* argv[]){
         else noPost();
         return 0;
     }
+    cout<<RED<<"Comanda nu exista!\n"<<RESET << "Foloseste comanda " GREEN "help" RESET " pentru comenzile disponibile.\n";
 }

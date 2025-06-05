@@ -9,7 +9,8 @@ add_library(bloglib STATIC
         src/Stats.h
 )
 
-add_executable(adminapp src/adminapp.cpp)
+add_executable(adminapp src/adminapp.cpp
+)
 target_link_libraries(adminapp bloglib)
 
 add_executable(userapp src/userapp.cpp)

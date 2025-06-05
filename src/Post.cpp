@@ -48,9 +48,10 @@ void Post::addComment(const Comment &comment) {
 void Post::bigPrint(std::ostream& os) const {
     os <<
         //id << " | " //folosit pentru testare, programul foloseste index-ul vectorului in loc de id
-    BOLDMAGENTA<< title << RESET << " | "
-    BOLDRED<< file << RESET << " | "
-    BLUE<< date << RESET << " | "
+    BOLDMAGENTA<< title << RESET << " | ";
+    if (file!= "NONE")
+        os << BOLDRED<< file << RESET << " | ";
+    os << BLUE<< date << RESET << " | "
     << stats << " | "
     << '\n' << content
     << YELLOW;
@@ -84,9 +85,10 @@ void Post::interactionPrint(std::ostream& os) const{
 ostream & operator<<(ostream &os, const Post &post) {
     os <<
     //post.id << " | " << //folosit pentru testare, programul foloseste index-ul vectorului in loc de id
-    BOLDMAGENTA << post.title << RESET << " | "
-    << "Fișier: " BOLDRED << post.file << RESET << " | "
-    BLUE << post.date << RESET " | "
+    BOLDMAGENTA << post.title << RESET << " | ";
+    if (post.file != "NONE")
+        os << "Fisier: " BOLDRED << post.file << RESET << " | ";
+    os << BLUE << post.date << RESET " | "
     << post.stats << " | "
     YELLOW << post.comments.size() << " Comentarii" << RESET;
     return os;

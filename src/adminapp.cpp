@@ -220,8 +220,8 @@ template<typename T> double precent(T value,T total)
 void postprecent(int index)
 {
     unsigned int total=posts[index].getStats().getDislike()+posts[index].getStats().getLike()+posts[index].getStats().getLove();
-    cout<<BLUE<<"Statisticile posarii: \n"<<RESET<<GREEN<<"+"<<precent(posts[index].getStats().getLike(),total)<<"%"<<RESET<<"|"
-    <<CYAN<<"-"<<precent(posts[index].getStats().getDislike(),total)<<"%"<<RESET<<"|"
+    cout<<BLUE<<"Statisticile postarii" RESET ": \n"<<GREEN<<"+"<<precent(posts[index].getStats().getLike(),total)<<"%"<<RESET<<" | "
+    <<CYAN<<"-"<<precent(posts[index].getStats().getDislike(),total)<<"%"<<RESET<<" | "
     <<RED<<precent(posts[index].getStats().getLove(),total)<<"%"<<" <3"<<RESET<<"\n";
 }
 
@@ -242,8 +242,8 @@ void precentdistribution()
         sumLove+=precent(posts[i].getStats().getLove(),total);
     }
     double totalPrecent=sumDislike+sumLike+sumLove;
-    cout<<"Distributia procentuala a statisticilor: "<<GREEN<<"+"<<precent(sumLike,totalPrecent)<<"%"<<RESET<<" |"<<CYAN<<"-"<<precent(sumDislike,totalPrecent)
-    <<"% "<<RESET<<"|"<<RED<<precent(sumLove,totalPrecent)<<"% <3\n"<<RESET;
+    cout<< BLUE "Distributia procentuala a statisticilor" RESET ": \n"<<GREEN<<"+"<<precent(sumLike,totalPrecent)<<"%"<<RESET<<" | "<<CYAN<<"-"<<precent(sumDislike,totalPrecent)
+    <<"% "<<RESET<<"| "<<RED<<precent(sumLove,totalPrecent)<<"% <3\n"<<RESET;
 }
 
 /**
@@ -291,9 +291,9 @@ void cmdHelp()
     << GREEN "vizualizare_interactiuni <numar_postare>" RESET" - arata toate interactiunile unei postari;\n"
     << GREEN "postare_noua <titlu_postare> <continut_postare> [file]" RESET " - adauga o postare noua;\n"
     << GREEN "editare_postare <numar_postare> <titlu|continut|fisier> <content_nou>" RESET " - editeaza contentul unei postari;\n"
-    << GREEN "sterge_postare <numar_postare>" RESET " - sterge o postare."
-    << GREEN "statistici_postare <numar_postare>" RESET " - procentul de like, dislike si love ale unei posari"
-    << GREEN "statistici_postari" RESET " - distributia procentuala ale staticilor per postare";
+    << GREEN "sterge_postare <numar_postare>" RESET " - sterge o postare;\n"
+    << GREEN "statistici_postare <numar_postare>" RESET " - procentul de like, dislike si love ale unei postari;\n"
+    << GREEN "statistici_postari" RESET " - distributia procentuala a statisticilor per postare;\n";
 }
 
 /**
@@ -417,7 +417,7 @@ int main(int argc, char* argv[])
         {
             string content=argv[4];
             posts[index].editcontent(content);
-            cout<<"Continutul postarii a fost editata cu success!\n";
+            cout<<"Continutul postarii a fost editat cu success!\n";
             writeposts();
             return 0;
         }
@@ -425,7 +425,7 @@ int main(int argc, char* argv[])
         {
             string title=argv[4];
             posts[index].edittitle(title);
-            cout<<"Titlul postarii a fost editata cu success!\n";
+            cout<< MAGENTA "Titlul " RESET " postarii a fost editata cu success!\n";
             writeposts();
             return 0;
         }
@@ -435,7 +435,7 @@ int main(int argc, char* argv[])
             if(!validatefile(file))
                 return 0;
             posts[index].editfile(file);
-            cout<<"Fisierul postarii a fost editata cu success!\n";
+            cout<< RED "Fisierul " RESET " postarii a fost editat cu success!\n";
             writeposts();
             return 0;
         }
@@ -462,7 +462,7 @@ int main(int argc, char* argv[])
         deleteComments(index);
         deleteStats(index);
         posts.erase(posts.begin()+index);
-        cout<<"Postarea a fost stearsa cu success!\n";
+        cout<<"Postarea a fost " RED "stearsa" RESET " cu success!\n";
         writeposts();
         return 0;
     }
@@ -487,9 +487,6 @@ int main(int argc, char* argv[])
         precentdistribution();
         return 0;
     }
-    else
-    {
-        cout<<RED<<"Comanda nu exista\n"<<RESET;
-        return 0;
-    }
+    cout<<RED<<"Comanda nu exista!\n"<< RESET << "Foloseste comanda " GREEN "help" RESET " pentru comenzile disponibile.\n";
+    return 0;
 }
