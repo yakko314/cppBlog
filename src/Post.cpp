@@ -64,6 +64,23 @@ void Post::bigPrint(std::ostream& os) const {
     }
 }
 
+void Post::commentPrint(std::ostream& os) const{
+    os<<BOLDMAGENTA<< title<<RESET<<'\n';
+    if(comments.empty()){
+        os << "\t(No comments yet)\n" << RESET;
+    } else {
+        os << "\n" << comments.size() << " comentarii:\n" << RESET;
+        for (const auto& comment : comments) {
+            os << "\t-" << comment << '\n';
+        }
+    }
+}
+
+void Post::interactionPrint(std::ostream& os) const{
+    os<<BOLDMAGENTA<< title<<RESET<<'\n';
+    os<<stats<<'\n';
+}
+
 ostream & operator<<(ostream &os, const Post &post) {
     os <<
     //post.id << " | " << //folosit pentru testare, programul foloseste index-ul vectorului in loc de id

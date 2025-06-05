@@ -67,9 +67,31 @@ public:
      */
     void addComment(const Comment& comment);
 
+    /**
+     * O functie pentru afisarea comentariilor pentru o anumita postare
+     * @param os streamul care va fi folosit
+     */
+    void commentPrint(std::ostream&os) const;
+
+    /**
+     * O functie pentru afisarea interactiuniilor pentru o anumita postare
+     * @param os streamul care va fi folosit
+     */
+    void interactionPrint(std::ostream&os) const;
+
+    /**
+     * O functie pentru a edita continutul unei postari
+     * @param newcontent este continutul nou pentru postare
+     */
+    void editcontent(string newcontent){this->content=newcontent;}
+
     vector<Comment> getComments() const { return comments;};
     int getId()const{ return id;}
     Stats getStats() const { return stats;}
+    string getTitle() const{return title;}
+    string getFile() const{return file;}
+    string getContent() const{return content;}
+    Date getDate() const{return date;}
 };
 
 

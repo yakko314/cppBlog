@@ -43,11 +43,13 @@ int nrComments = 0; ///< variabila ajutatoare pentru nr de comentarii
 /**
  * @brief Citeste toate datele relevante si le include in clase cu care putem lucra
  */
-void read() {
+void read() 
+{
 
     f.open("tests/Postari.txt");
     f >> nrPosts;
-    for (int i = 0; i < nrPosts; i++) {
+    for (int i = 0; i < nrPosts; i++) 
+    {
         int id;
         string title;
         string file;
@@ -74,7 +76,8 @@ void read() {
     f.open("tests/Comentarii.txt");
     string content;
     f >> nrComments;
-    for (int i = 0; i < nrComments; i++) {
+    for (int i = 0; i < nrComments; i++) 
+    {
         int x;
         f>>x;
         f.ignore();
@@ -83,7 +86,8 @@ void read() {
         getline(f, content);
         int day, month, year;
         f >> day >> month >> year;
-        if (idToIndex.count(x)) {
+        if (idToIndex.count(x)) 
+        {
             Date date(day,month,year);
             Comment comment(username,content,date);
             // std::cout << "Adding comment to post " << x << ": \"" << content << "\" by " << username << " on " << date << "\n";
@@ -96,16 +100,19 @@ void read() {
     f.open("tests/Statistici.txt");
     int nrInteractiuni;
     f >> nrInteractiuni;
-    for (int i = 0; i < nrInteractiuni; i++) {
+    for (int i = 0; i < nrInteractiuni; i++) 
+    {
         int x;
         f>>x;
-        if (idToIndex.count(x)) {
+        if (idToIndex.count(x)) 
+        {
             int like, dislike, love;
             f >> like >> dislike >> love;
             Stats stats(like,dislike,love);
             posts[idToIndex[x]].setStats(stats);
 
-        } else {
+        } else 
+        {
             unsigned int tmp1, tmp2, tmp3;
             f >> tmp1 >> tmp2 >> tmp3;
         }
@@ -115,102 +122,202 @@ void read() {
 }
 
 /**
- * @brief Scrie interactiuni catre fisierul ce le contine
+ * @brief Rescrie in fisierul de postari toate postarile
  */
-void writeToStats() {
-    int nrInteractiuni = 0;
-    for (const auto& p : posts) {
-        if (p.getStats().getLike() != 0 ||
-            p.getStats().getDislike() != 0 ||
-            p.getStats().getLove() != 0) {
-            nrInteractiuni++;
-            }
-    }
-    g.open("tests/Statistici.txt");
-    g << nrInteractiuni << "\n\n";
-    for (const auto& p : posts) {
-        if (p.getStats().getLike() != 0 || p.getStats().getDislike() != 0 || p.getStats().getLove() != 0) {
-            g << p.getId() << '\n';
-            g << p.getStats().getLike() << ' '
-            << p.getStats().getDislike() << ' '
-            << p.getStats().getLove() << '\n';
-            g << '\n';
-        }
-
+void writeposts()
+{
+    g.open("tests/Postari.txt");
+    g<< posts.size()<<"\n";
+    for(int i=0;i<posts.size();i++)
+    {
+        g<<posts[i].getId()<<'\n';
+        g<<posts[i].getTitle()<<'\n';
+        g<<posts[i].getFile()<<'\n';
+        g<<posts[i].getContent()<<'\n';
+        g<<posts[i].getDate().getDay()<<' ';
+        g<<posts[i].getDate().getMonth()<<' ';
+        g<<posts[i].getDate().getYear()<<'\n';
+        if(i!=posts.size()-1)
+            g<<"\n";
     }
     g.close();
 }
 
 /**
- * @brief Scrie comentarii catre fisierul care le contine
+ * @brief Cauta cel mai mic id care nu este folosit
  */
-void writeToComments() {
-    g.open("tests/Comentarii.txt");
-    g << nrComments << "\n\n";
-    for (const auto& p : posts) {
-        if (!p.getComments().empty()) {
-            for (const auto& c : p.getComments()) {
-                g << p.getId() << '\n';
-                g << c.getUsername() << '\n';
-                g << c.getContent() << '\n';
-                g << c.getDate().getDay() << ' ';
-                g << c.getDate().getMonth() << ' ';
-                g << c.getDate().getYear() << '\n';
-                g << "\n";
+int idnou()
+{
+    int i=0,ok=0,da=0;
+    while(!ok)
+    {
+        da=1;
+        for(int j=0;j<posts.size();j++)
+        {
+            if(posts[j].getId()==i)
+            {
+                da=0;
+                i++;
             }
-
+        }
+        if(da==1)
+        {
+            ok=1;
         }
     }
-    g.close();
-}
-/**
- * @brief Afiseaza toate postarile in mod compact.
- */
-void showAll() {
-    int i = 1;
-    for (auto const &p : posts) {
-        cout << i++ << " | " << p << '\n';
-    }
+    return  i;
 }
 
 /**
- * @brief Afiseaza toate postarile cu continut si comentarii, a fost folosita doar in testare.
+ * O functie care determina daca fisierul introdus are extensia corespunzatoare
+ * @param fisier este stringul in care se va cauta extensia
+ * @param ext este extensia cautata
  */
-void showAllExpanded() {
-    for (auto& p : posts) {
-        // cout << p << '\n';
-        // // for (const auto& c : p.getComments()) {
-        // //     cout << c << '\n';
-        // // }
-        p.bigPrint(cout);
-        cout << '\n';
-    }
+bool extensie( string fisier, string ext)
+{
+    return fisier.size()>=ext.size() && fisier.compare(fisier.size()-ext.size(),ext.size(),ext) == 0;
 }
 
 /**
  * @brief Afiseaza toate comenzile posibile
  */
-void cmdHelp() {
+void cmdHelp() 
+{
     cout << CYAN "~Sistem de blog: Admin~\n" RESET
-    << GREEN "etc" RESET " - etcetcetc";
+    << GREEN "vizualizare_comentarii <numar_postare>" RESET " - arata toate comantariile unei postari;\n"
+    << GREEN "vizualizare_interactiuni <numar_postare>" RESET" - arata toate interactiunile unei postari;\n"
+    << GREEN "postare_noua <titlu_postare> <continut_postare> [file]" RESET " - adauga o postare noua;\n"
+    << GREEN "editare_postare <numar_postare> <content_nou>" RESET " - editeaza contentul unei postari;\n"
+    << GREEN "sterge_postare <numar_postare>" RESET " - sterge o postare.";
 }
 
 /**
  * @brief Semnaleaza lipsa unei postari la un anume index.
  */
-void noPost() {
+void noPost() 
+{
     cout << RED "Postarea nu exista!\n" RESET;
 }
 
 
 int main(int argc, char* argv[]){
     read();
-    if (argc == 1) {
+    if (argc == 1) 
+    {
         cmdHelp();
         return 0;
     }
     string command = argv[1];
-    if (command == "etcetc") {
+    if(command=="help")
+    {
+        cmdHelp();
+        return 0;
+    }
+    if (command=="vizualizare_comentarii") 
+    {
+        if(argc<3)
+        {
+            cout<< GREEN "Utilizare: " RESET "vizualizare_comentarii <numar_postare>\n";
+            return 0;
+        }
+        int index=stoi(argv[2])-1;
+        if(index<0 || index>=posts.size())
+        {
+            noPost();
+            return 0;
+        }
+        posts[index].commentPrint(cout);
+        return 0;
+    }
+    if(command=="vizualizare_interactiuni")
+    {
+        if(argc<3)
+        {
+            cout<< GREEN "Utilizare: " RESET "vizualizare_interactiuni <numar_postare>\n";
+            return 0;
+        }
+        int index=stoi(argv[2])-1;
+        if(index<0 || index>=posts.size())
+        {
+            noPost();
+            return 0;
+        }
+        posts[index].interactionPrint(cout);
+        return 0;
+    }
+    if(command=="postare_noua")
+    {
+        if(argc<4)
+        {
+            cout<< GREEN "Utilizare: " RESET "postare_noua <titlu_postare> <continut_postare> [file]\n";
+            return 0;
+        }
 
+        //Extragem data curenta
+        auto now = chrono::system_clock::now();
+        time_t now_time = chrono::system_clock::to_time_t(now);
+        tm* local_tm = localtime(&now_time);
+        int day = local_tm->tm_mday;
+        int month = local_tm->tm_mon + 1;
+        int year = local_tm->tm_year + 1900;
+        Date data(day,month,year);
+        int id=idnou();
+        string title=argv[2];
+        string content=argv[3];
+        string file;
+        if(argc>4)
+        {
+            file=argv[4];
+            if(!extensie(file,".mp4") && !extensie(file,".mp3") && !extensie(file,".jpg") && !extensie(file,".png"))
+            {
+                cout<<RED<<"Fisierul nu contine o extensie valida\n"<<RESET;
+                cout<<BLUE<<"Extensiile Valde: "<<RESET<<" .mp4; .mp3; .jpg; .png;\n";
+                return 0;
+            }
+        }
+        else
+            file="NONE";
+        Post newpost(id,title,file,content,data);
+        posts.push_back(newpost);
+        cout<<"Postarea cu numele " << BLUE<< title <<RESET<<" a fost adaugata cu succes!\n";
+        writeposts();
+        return 0;
+    }
+    if(command=="editare_postare")
+    {
+        if(argc<4)
+        {
+            cout<< GREEN "Utilizare: " RESET "editare_postare <numar_postare> <content_nou>\n";
+            return 0;
+        }
+        int index=stoi(argv[2])-1;
+        if(index<0 || index>=posts.size())
+        {
+            noPost();
+            return 0;
+        }
+        string content=argv[3];
+        posts[index].editcontent(content);
+        cout<<"Postarea a fost editata cu success!\n";
+        writeposts();
+        return 0;
+    }
+    if(command=="sterge_postare")
+    {
+        if(argc<3)
+        {
+            cout<< GREEN "Utilizare: " RESET "sterge_postare <numar_postare>\n";
+            return 0;
+        }
+        int index=stoi(argv[2])-1;
+        if(index<0 || index>=posts.size())
+        {
+            noPost();
+            return 0;
+        }
+        posts.erase(posts.begin()+index);
+        cout<<"Postarea a fost stearsa cu success!\n";
+        writeposts();
+        return 0;
     }
 }
