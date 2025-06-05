@@ -85,6 +85,18 @@ public:
      */
     void editcontent(string newcontent){this->content=newcontent;}
 
+    /**
+     * O functie pentru a edita titlul unei postari
+     * @param newtitle este titlul nou pentru postare
+     */
+    void edittitle(string newtitle){this->title=newtitle;}
+
+    /**
+     * O functie pentru a edita fisierul unei postari
+     * @param newcontent este fisierul nou pentru postare
+     */
+    void editfile(string newfile){this->file=newfile;}
+
     vector<Comment> getComments() const { return comments;};
     int getId()const{ return id;}
     Stats getStats() const { return stats;}

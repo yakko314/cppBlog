@@ -187,7 +187,7 @@ void cmdHelp()
     << GREEN "vizualizare_comentarii <numar_postare>" RESET " - arata toate comantariile unei postari;\n"
     << GREEN "vizualizare_interactiuni <numar_postare>" RESET" - arata toate interactiunile unei postari;\n"
     << GREEN "postare_noua <titlu_postare> <continut_postare> [file]" RESET " - adauga o postare noua;\n"
-    << GREEN "editare_postare <numar_postare> <content_nou>" RESET " - editeaza contentul unei postari;\n"
+    << GREEN "editare_postare <numar_postare> <titlu|continut|fisier> <content_nou>" RESET " - editeaza contentul unei postari;\n"
     << GREEN "sterge_postare <numar_postare>" RESET " - sterge o postare.";
 }
 
@@ -285,9 +285,9 @@ int main(int argc, char* argv[]){
     }
     if(command=="editare_postare")
     {
-        if(argc<4)
+        if(argc<5)
         {
-            cout<< GREEN "Utilizare: " RESET "editare_postare <numar_postare> <content_nou>\n";
+            cout<< GREEN "Utilizare: " RESET "editare_postare <numar_postare> <titlu|continut|fisier> <content_nou>\n";
             return 0;
         }
         int index=stoi(argv[2])-1;
@@ -296,11 +296,42 @@ int main(int argc, char* argv[]){
             noPost();
             return 0;
         }
-        string content=argv[3];
-        posts[index].editcontent(content);
-        cout<<"Postarea a fost editata cu success!\n";
-        writeposts();
-        return 0;
+        string edit=argv[3];
+        if(edit=="continut")
+        {
+            string content=argv[4];
+            posts[index].editcontent(content);
+            cout<<"Continutul postarii a fost editata cu success!\n";
+            writeposts();
+            return 0;
+        }
+        if(edit=="titlu")
+        {
+            string title=argv[4];
+            posts[index].edittitle(title);
+            cout<<"Titlul postarii a fost editata cu success!\n";
+            writeposts();
+            return 0;
+        }
+        if(edit=="fisier")
+        {
+            string file=argv[4];
+            if(!extensie(file,".mp4") && !extensie(file,".mp3") && !extensie(file,".jpg") && !extensie(file,".png"))
+            {
+                cout<<RED<<"Fisierul nu contine o extensie valida\n"<<RESET;
+                cout<<BLUE<<"Extensiile Valde: "<<RESET<<" .mp4; .mp3; .jpg; .png;\n";
+                return 0;
+            }
+            posts[index].editfile(file);
+            cout<<"Fisierul postarii a fost editata cu success!\n";
+            writeposts();
+            return 0;
+        }
+        else
+        {
+            cout<< GREEN "Utilizare: " RESET "editare_postare <numar_postare> <titlu|continut|fisier> <content_nou>\n";
+            return 0;
+        }
     }
     if(command=="sterge_postare")
     {
