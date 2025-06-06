@@ -212,6 +212,28 @@ void writeposts()
     g.close();
 }
 
+void deletePost(int index)
+{
+    g.open("shared/files/Postari.txt");
+    g<< posts.size()<<"\n";
+    for(int i=0;i<posts.size();i++)
+    {
+        if(i!=index)
+        {
+            g<<posts[i].getId()<<'\n';
+            g<<posts[i].getTitle()<<'\n';
+            g<<posts[i].getFile()<<'\n';
+            g<<posts[i].getContent()<<'\n';
+            g<<posts[i].getDate().getDay()<<' ';
+            g<<posts[i].getDate().getMonth()<<' ';
+            g<<posts[i].getDate().getYear()<<'\n';
+            if(i!=posts.size()-1)
+                g<<"\n";
+        }
+    }
+    g.close();
+}
+
 /**
  * O functie template care calculeaza valuarea procentuala fata de un total
  * @param value valuarea pentru care se doreste calculat procentul
@@ -282,6 +304,32 @@ int idnou()
 }
 
 /**
+ * O functie care verifica daca sa introdus un numar natrual pozitiv
+ * @param s este variabila care se verifica
+ */
+bool isPositive(string s)
+{
+    if(s.empty()) 
+        return false;
+    if(s[0]=='+')
+    {
+        if(s.size()==1)
+            return false;
+    }
+    else
+    {
+        if(!isdigit(s[0]) || s[0]=='-')
+            return false;
+    }
+    for(int i=1;i<s.size();i++)
+    {
+        if(!isdigit(s[i]))
+            return false;
+    }
+    return true;
+}
+
+/**
  * O functie care determina daca fisierul introdus are extensia corespunzatoare
  * @param fisier este stringul in care se va cauta extensia
  * @param ext este extensia cautata
@@ -345,8 +393,15 @@ int main(int argc, char* argv[])
     }
     if (command=="vizualizare_comentarii") 
     {
-        if(argc<3)
+        if(argc<3 || argc>3)
         {
+            cout<< GREEN "Utilizare: " RESET "vizualizare_comentarii <numar_postare>\n";
+            return 0;
+        }
+        string s=argv[2];
+        if(!isPositive(s))
+        {
+            cout<<RED "<numar_postare>" RESET " trebuie sa fie un numar natural pozitiv.\n";
             cout<< GREEN "Utilizare: " RESET "vizualizare_comentarii <numar_postare>\n";
             return 0;
         }
@@ -361,8 +416,15 @@ int main(int argc, char* argv[])
     }
     if(command=="vizualizare_interactiuni")
     {
-        if(argc<3)
+        if(argc<3 || argc>3)
         {
+            cout<< GREEN "Utilizare: " RESET "vizualizare_interactiuni <numar_postare>\n";
+            return 0;
+        }
+        string s=argv[2];
+        if(!isPositive(s))
+        {
+            cout<<RED "<numar_postare>" RESET " trebuie sa fie un numar natural pozitiv.\n";
             cout<< GREEN "Utilizare: " RESET "vizualizare_interactiuni <numar_postare>\n";
             return 0;
         }
@@ -377,12 +439,12 @@ int main(int argc, char* argv[])
     }
     if(command=="postare_noua")
     {
-        if(argc<4)
+        if(argc<4 || argc>5)
         {
             cout<< GREEN "Utilizare: " RESET "postare_noua <titlu_postare> <continut_postare> [file]\n";
+            cout<< BLUE "Formatare: " RESET "pentru a pune un text care contine spatii se va scrie intre \" \" \n";
             return 0;
         }
-
         //Extragem data curenta
         auto now = chrono::system_clock::now();
         time_t now_time = chrono::system_clock::to_time_t(now);
@@ -411,8 +473,16 @@ int main(int argc, char* argv[])
     }
     if(command=="editare_postare")
     {
-        if(argc<5)
+        if(argc<5 || argc>5)
         {
+            cout<< GREEN "Utilizare: " RESET "editare_postare <numar_postare> <titlu|continut|fisier> <content_nou>\n";
+            cout<< BLUE "Formatare: " RESET "pentru a pune un text care contine spatii se va scrie intre \" \" \n";
+            return 0;
+        }
+        string s=argv[2];
+        if(!isPositive(s))
+        {
+            cout<<RED "<numar_postare>" RESET " trebuie sa fie un numar natural pozitiv.\n";
             cout<< GREEN "Utilizare: " RESET "editare_postare <numar_postare> <titlu|continut|fisier> <content_nou>\n";
             return 0;
         }
@@ -427,7 +497,7 @@ int main(int argc, char* argv[])
         {
             string content=argv[4];
             posts[index].editcontent(content);
-            cout<<"Continutul postarii a fost editat cu success!\n";
+            cout<<BOLDWHITE "Continutul" RESET " postarii a fost editat cu success!\n";
             writeposts();
             return 0;
         }
@@ -435,7 +505,7 @@ int main(int argc, char* argv[])
         {
             string title=argv[4];
             posts[index].edittitle(title);
-            cout<< MAGENTA "Titlul " RESET " postarii a fost editata cu success!\n";
+            cout<< MAGENTA "Titlul" RESET " postarii a fost editata cu success!\n";
             writeposts();
             return 0;
         }
@@ -445,7 +515,7 @@ int main(int argc, char* argv[])
             if(!validatefile(file))
                 return 0;
             posts[index].editfile(file);
-            cout<< RED "Fisierul " RESET " postarii a fost editat cu success!\n";
+            cout<< RED "Fisierul" RESET " postarii a fost editat cu success!\n";
             writeposts();
             return 0;
         }
@@ -457,8 +527,15 @@ int main(int argc, char* argv[])
     }
     if(command=="sterge_postare")
     {
-        if(argc<3)
+        if(argc<3 || argc>3)
         {
+            cout<< GREEN "Utilizare: " RESET "sterge_postare <numar_postare>\n";
+            return 0;
+        }
+        string s=argv[2];
+        if(!isPositive(s))
+        {
+            cout<<RED "<numar_postare>" RESET " trebuie sa fie un numar natural pozitiv.\n";
             cout<< GREEN "Utilizare: " RESET "sterge_postare <numar_postare>\n";
             return 0;
         }
@@ -478,9 +555,16 @@ int main(int argc, char* argv[])
     }
     if(command=="statistici_postare")
     {
-        if(argc<3)
+        if(argc<3 || argc>3) 
         {
             cout<< GREEN "Utilizare: " RESET "statistici_postare <numar_postare>\n";
+            return 0;
+        }
+        string s=argv[2];
+        if(!isPositive(s))
+        {
+            cout<<RED "<numar_postare>" RESET " trebuie sa fie un numar natural pozitiv.\n";
+            cout<<GREEN "Utilizare: " RESET "statistici_postare <numar_postare>\n";
             return 0;
         }
         int index=stoi(argv[2])-1;

@@ -173,6 +173,29 @@ void writeToComments() {
     }
     g.close();
 }
+
+/**
+ * O functie care verifica daca sa introdus un numar natrual pozitiv
+ * @param s este variabila care se verifica
+ */
+bool isPositive(string s){
+    if(s.empty()) 
+        return false;
+    if(s[0]=='+'){
+        if(s.size()==1)
+            return false;
+    }
+    else{
+        if(!isdigit(s[0]) || s[0]=='-')
+            return false;
+    }
+    for(int i=1;i<s.size();i++){
+        if(!isdigit(s[i]))
+            return false;
+    }
+    return true;
+}
+
 /**
  * @brief Afiseaza toate postarile in mod compact.
  */
@@ -231,6 +254,16 @@ int main(int argc, char* argv[]){
         return 0;
     }
     if (command == "vizualizare_postare") {
+        if(argc < 3 || argc > 3){
+            cout<< GREEN "Utilizare: " RESET "vizualizare_postare <nr_postare>\n";
+            return 0;
+        }
+        string s=argv[2];
+        if(!isPositive(s)){
+            cout<<RED "<nr_postare>" RESET " trebuie sa fie un numar natural pozitiv.\n";
+            cout<< GREEN "Utilizare: " RESET "vizualizare_postare <nr_postare>\n";
+            return 0;
+        }
         int index = stoi(argv[2]) - 1;
         if (index >= 0 && index < posts.size()) {
             posts[index].bigPrint(cout);
@@ -241,7 +274,7 @@ int main(int argc, char* argv[]){
         return 0;
     }
     if (command == "adauga_comentariu") {
-        if (argc < 5) {
+        if (argc < 5 || argc > 5) {
             cerr << GREEN "Utilizare: " RESET "adauga_comentariu <nr_postare> <username> <continut_comentariu>\n";
             return 0;
         }
@@ -256,7 +289,12 @@ int main(int argc, char* argv[]){
 
         //cout << day << "." << month << "." << year << '\n';
         Date date(day,month,year);
-
+        string s=argv[2];
+        if(!isPositive(s)){
+            cerr<<RED "<nr_postare>" RESET " trebuie sa fie un numar natural pozitiv.\n";
+            cerr << GREEN "Utilizare: " RESET "adauga_comentariu <nr_postare> <username> <continut_comentariu>\n";
+            return 0;
+        }
         int index = stoi(argv[2]) - 1;
         if (index >= 0 && index < posts.size()) {
             string username = argv[3];
@@ -274,7 +312,13 @@ int main(int argc, char* argv[]){
         return 0;
     }
     if (command == "adauga_interactiune") {
-        if (argc < 4) {
+        if (argc < 4 || argc > 4) {
+            cerr << GREEN "Utilizare:" RESET " adauga_interactiune <nr_postare> <like|dislike|love>\n";
+            return 0;
+        }
+        string s=argv[2];
+        if(!isPositive(s)){
+            cerr<<RED "<nr_postare>" RESET " trebuie sa fie un numar natural pozitiv.\n";
             cerr << GREEN "Utilizare:" RESET " adauga_interactiune <nr_postare> <like|dislike|love>\n";
             return 0;
         }
@@ -284,6 +328,10 @@ int main(int argc, char* argv[]){
             if (interaction == "like") posts[index].Like(), cout << GREEN "Like";
             else if (interaction == "dislike") posts[index].Dislike(), cout << CYAN "Dislike";
             else if (interaction == "love") posts[index].Love(), cout << RED "Love";
+            else {
+                cerr<<RED "Trebuie introdus like, dislike sau love pentru a adauga o interactiune\n" RESET;
+                return 0;
+            }
             cout << RESET " s-a adaugat cu success!\n";
             writeToStats();
         }
